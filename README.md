@@ -1,3 +1,5 @@
+## RumbleEnhancerOculus
+
 BeatSaber haptic feedback system overhaul for oculus touch controller
 
 With this plugin, you can change haptic textures separtely for all type of events so far in game.
