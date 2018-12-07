@@ -1,9 +1,9 @@
 ## RumbleEnhancerOculus
 
-BeatSaber haptic feedback system overhaul for oculus touch controller
+BeatSaber haptic feedback system overhaul for Oculus Touch controller
 
-With this plugin, you can change haptic textures separtely for all type of events so far in game.
-Though this plugin realizes things by whole different approach from original RumbleEnhancer, I choose this name. I don't want people to confused.
+With this plugin, you can change haptic textures separately for all type of events so far in game.
+Though this plugin realizes things by whole different approach from original RumbleEnhancer, I choose this name. I don't want people to confused. The name also means it is alternative of RumbleEnhancer. Meaningless to install both.
 
 ### Notice
 
