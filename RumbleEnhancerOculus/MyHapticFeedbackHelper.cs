@@ -28,7 +28,6 @@ namespace RumbleEnhancerOculus
 		{
 			if (_waiterCache.ContainsKey(duration) == false)
 			{
-				Plugin.Log("waiter cache miss : " + duration);
 				_waiterCache.Add(duration, new WaitForSecondsRealtime(duration));
 			}
 			return _waiterCache[duration];
