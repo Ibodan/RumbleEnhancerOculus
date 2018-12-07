@@ -49,13 +49,13 @@ namespace RumbleEnhancerOculus
 				Console.WriteLine(e);
 			}
 
-			CutClip =      createHapticsClip(ModPrefs.GetString(Name, "CutClip",        "200,200,0,200,200,0", true));
-			MissCutClip =  createHapticsClip(ModPrefs.GetString(Name, "MissCutClip",    "255,255,255,0,255,255,255,0,0,0,0", true));
-			BombClip =     createHapticsClip(ModPrefs.GetString(Name, "BombClip",       "255,255,255,0,255,255,255,0,0,0,0", true));
+			CutClip =      createHapticsClip(ModPrefs.GetString(Name, "CutClip", "0,0,0,0,255,255,255,0,255,255,255,0,255,255,0,255,255,0,200,200,0,200,200,0,120,120,0,90,90,0,90,90", true));
+			MissCutClip =  createHapticsClip(ModPrefs.GetString(Name, "MissCutClip", "0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255", true));
+			BombClip =     createHapticsClip(ModPrefs.GetString(Name, "BombClip", "0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255", true));
 			UIClip =       createHapticsClip(ModPrefs.GetString(Name, "UIClip",         "80,100,0,0,0,0", true));
 			ClashClip =    createHapticsClip(ModPrefs.GetString(Name, "SaberClashClip", "45,90,135,180,0,0,0,0,0,0", true));
 			ObstacleClip = createHapticsClip(ModPrefs.GetString(Name, "ObstacleClip",   "255,255,255,0,255,255,255,0", true));
-			CutRumbleDuration = ModPrefs.GetFloat(Name, "NoteCutRumbleDuration", 0.16f, true);
+			CutRumbleDuration = 0.0f;
 		}
 
 		public void OnApplicationQuit()

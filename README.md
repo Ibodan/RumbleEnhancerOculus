@@ -20,5 +20,3 @@ Section named `RumbleEnhancerOculus` in `UserData/modprefs.ini` is the place for
 - Comma separated 0-255 strength. One item is for a signal of 1/320 = 0.003125secs
 - At least 6 items are required for `SaberClashClip` and `ObstacleClip`.
 - No foolproofs implemented. A wrongly parsed pattern still be played, but it may not as expected.
-
-`NoteCutRumbleDuration` is a secs for rumbling on each note cuts.
