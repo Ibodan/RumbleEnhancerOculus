@@ -2,9 +2,6 @@
 using System.Linq;
 using IllusionPlugin;
 using Harmony;
-using UnityEngine;
-using System.Reflection;
-using UnityEngine.SceneManagement;
 
 namespace RumbleEnhancerOculus
 {
@@ -19,7 +16,7 @@ namespace RumbleEnhancerOculus
 		public static float CutRumbleDuration;
 
 		public string Name => "RumbleEnhancerOculus";
-		public string Version => "1.0.1";
+		public string Version => "1.0.0";
 
 		private OVRHapticsClip createHapticsClip(string strPattern)
 		{
@@ -40,26 +37,8 @@ namespace RumbleEnhancerOculus
 			Console.WriteLine("[RumbleEnhancerOculus] " + s);
 		}
 
-		private void onSceneLoaded(Scene s, LoadSceneMode mode)
-		{
-			if (s.name == "GameCore")
-			{
-				var hfb = Resources.FindObjectsOfTypeAll<HapticFeedbackController>().FirstOrDefault();
-				if (hfb == null)
-				{
-					Log("HapticFeedbackController not found.");
-					return;
-				}
-				var prop = hfb.GetType().GetField("_mainSettingsModel", BindingFlags.NonPublic | BindingFlags.Instance);
-				var mainSetting = (MainSettingsModel)prop.GetValue(hfb);
-				mainSetting.controllersRumbleEnabled = false;
-			}
-		}
-
 		public void OnApplicationStart()
 		{
-			SceneManager.sceneLoaded += onSceneLoaded;
-
 			try
 			{
 				var harmony = HarmonyInstance.Create("HapticTest");
@@ -81,7 +60,6 @@ namespace RumbleEnhancerOculus
 
 		public void OnApplicationQuit()
 		{
-			SceneManager.sceneLoaded -= onSceneLoaded;
 		}
 
 		public void OnLevelWasLoaded(int level)
