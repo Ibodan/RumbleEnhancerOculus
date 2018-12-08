@@ -16,7 +16,7 @@ namespace RumbleEnhancerOculus
 		public static float CutRumbleDuration;
 
 		public string Name => "RumbleEnhancerOculus";
-		public string Version => "1.0.0";
+		public string Version => "1.0.2";
 
 		private OVRHapticsClip createHapticsClip(string strPattern)
 		{

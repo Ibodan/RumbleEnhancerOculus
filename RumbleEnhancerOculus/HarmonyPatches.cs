@@ -55,6 +55,20 @@ namespace RumbleEnhancerOculus
 				PersistentSingleton<MyHapticFeedbackController>.instance.ContinuousRumble(node, Plugin.ObstacleClip);
 			}
 		}
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			return new List<CodeInstruction>() { new CodeInstruction(OpCodes.Ret) };
+		}
+	}
+
+	[HarmonyPatch(typeof(HapticFeedbackController))]
+	[HarmonyPatch("Rumble")]
+	public static class HapticFeedbackControllerRumblePatch
+	{
+		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+		{
+			return new List<CodeInstruction>() { new CodeInstruction(OpCodes.Ret) };
+		}
 	}
 
 	[HarmonyPatch(typeof(OculusVRHelper))]
@@ -72,9 +86,7 @@ namespace RumbleEnhancerOculus
 		}
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
 		{
-			var codes = new List<CodeInstruction>(instructions);
-			codes[0].opcode = OpCodes.Ret;
-			return codes.AsEnumerable();
+			return new List<CodeInstruction>() { new CodeInstruction(OpCodes.Ret) };
 		}
 	}
 }
