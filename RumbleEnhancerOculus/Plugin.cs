@@ -2,6 +2,8 @@
 using System.Linq;
 using IllusionPlugin;
 using Harmony;
+using UnityEngine;
+using System.Collections;
 
 namespace RumbleEnhancerOculus
 {
@@ -16,7 +18,7 @@ namespace RumbleEnhancerOculus
 		public static float CutRumbleDuration;
 
 		public string Name => "RumbleEnhancerOculus";
-		public string Version => "1.0.2";
+		public string Version => "1.0.3";
 
 		private OVRHapticsClip createHapticsClip(string strPattern)
 		{
@@ -39,15 +41,7 @@ namespace RumbleEnhancerOculus
 
 		public void OnApplicationStart()
 		{
-			try
-			{
-				var harmony = HarmonyInstance.Create("HapticTest");
-				harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-			}
+			SharedCoroutineStarter.instance.StartCoroutine(Patch());
 
 			CutClip =      createHapticsClip(ModPrefs.GetString(Name, "CutClip", "0,0,0,0,255,255,255,0,255,255,255,0,255,255,0,255,255,0,200,200,0,200,200,0,120,120,0,90,90,0,90,90", true));
 			MissCutClip =  createHapticsClip(ModPrefs.GetString(Name, "MissCutClip", "0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255", true));
@@ -56,6 +50,14 @@ namespace RumbleEnhancerOculus
 			ClashClip =    createHapticsClip(ModPrefs.GetString(Name, "SaberClashClip", "45,90,135,180,0,0,0,0,0,0", true));
 			ObstacleClip = createHapticsClip(ModPrefs.GetString(Name, "ObstacleClip",   "255,255,255,0,255,255,255,0", true));
 			CutRumbleDuration = 0.0f;
+		}
+
+		private IEnumerator Patch()
+		{
+			yield return new WaitForSecondsRealtime(3.0f);
+			var harmony = HarmonyInstance.Create("HapticTest");
+			harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+			Console.WriteLine("[RumbleEnhancerOculus] patch applied now.");
 		}
 
 		public void OnApplicationQuit()
