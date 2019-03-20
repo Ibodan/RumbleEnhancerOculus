@@ -58,6 +58,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>E:\Steam7\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Steam7\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HarmonyPatches.cs" />
@@ -66,4 +70,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"C:\Users\kataho\Desktop\beat saber workspace\PluginVersionSetter.exe" $(ProjectDir)Properties\AssemblyInfo.cs $(ProjectDir)Plugin.cs
+</PreBuildEvent>
+  </PropertyGroup>
 </Project>
