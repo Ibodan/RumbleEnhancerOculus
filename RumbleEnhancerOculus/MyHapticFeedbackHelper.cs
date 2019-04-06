@@ -20,17 +20,27 @@ namespace RumbleEnhancerOculus
 			public bool finished = true;
 		}
 
+		private struct CWaiterKey
+		{
+			public XRNode node;
+			public float duration;
+		}
+
 		private Dictionary<CRumbleKey, CRumbleValue> _contRumbleStatuses = new Dictionary<CRumbleKey, CRumbleValue>();
 
-		private Dictionary<float, CustomYieldInstruction> _waiterCache = new Dictionary<float, CustomYieldInstruction>();
+		private Dictionary<CWaiterKey, CustomYieldInstruction> _waiterCache = new Dictionary<CWaiterKey, CustomYieldInstruction>();
 
-		private CustomYieldInstruction GetWaiterFor(float duration)
+		private CustomYieldInstruction GetWaiterFor(XRNode node, float duration)
 		{
-			if (_waiterCache.ContainsKey(duration) == false)
+			CWaiterKey key;
+			key.node = node;
+			key.duration = duration;
+			
+			if (_waiterCache.ContainsKey(key) == false)
 			{
-				_waiterCache.Add(duration, new WaitForSecondsRealtime(duration));
+				_waiterCache.Add(key, new WaitForSecondsRealtime(duration));
 			}
-			return _waiterCache[duration];
+			return _waiterCache[key];
 		}
 
 		private void TriggerHapticFeedback(XRNode node, OVRHapticsClip clip)
@@ -69,7 +79,7 @@ namespace RumbleEnhancerOculus
 		private System.Collections.IEnumerator RumbleCoroutine(XRNode node, OVRHapticsClip clip, float duration)
 		{
 			float clipDuration = clip.Count / _kSampleHz;
-			var waiter = GetWaiterFor(clipDuration);
+			var waiter = GetWaiterFor(node, clipDuration);
 			do
 			{
 				TriggerHapticFeedback(node, clip);
@@ -84,7 +94,7 @@ namespace RumbleEnhancerOculus
 			var node = statusKey.node;
 			var clip = statusKey.clip;
 			float clipDuration = clip.Count / _kSampleHz;
-			var waiter = GetWaiterFor(clipDuration);
+			var waiter = GetWaiterFor(statusKey.node, clipDuration);
 			_contRumbleStatuses[statusKey].finished = false;
 			do
 			{

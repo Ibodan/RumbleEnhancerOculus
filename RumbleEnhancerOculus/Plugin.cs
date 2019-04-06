@@ -18,7 +18,7 @@ namespace RumbleEnhancerOculus
 		public static float CutRumbleDuration;
 
 		public string Name => "RumbleEnhancerOculus";
-		public string Version => "1.0.5";
+		public string Version => "1.0.6";
 
 		private OVRHapticsClip createHapticsClip(string strPattern)
 		{
@@ -54,7 +54,7 @@ namespace RumbleEnhancerOculus
 
 		private IEnumerator Patch()
 		{
-			yield return new WaitForSecondsRealtime(1.0f);
+			yield return new WaitForSecondsRealtime(0.2f);
 			var harmony = HarmonyInstance.Create("HapticTest");
 			harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
 			Console.WriteLine("[RumbleEnhancerOculus] patch applied now.");
