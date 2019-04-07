@@ -15,7 +15,6 @@ namespace RumbleEnhancerOculus
 		public static OVRHapticsClip BombClip;
 		public static OVRHapticsClip ClashClip;
 		public static OVRHapticsClip ObstacleClip;
-		public static float CutRumbleDuration;
 
 		public string Name => "RumbleEnhancerOculus";
 		public string Version => "1.0.6";
@@ -49,7 +48,6 @@ namespace RumbleEnhancerOculus
 			UIClip =       createHapticsClip(ModPrefs.GetString(Name, "UIClip",         "80,100,0,0,0,0", true));
 			ClashClip =    createHapticsClip(ModPrefs.GetString(Name, "SaberClashClip", "45,90,135,180,0,0,0,0,0,0", true));
 			ObstacleClip = createHapticsClip(ModPrefs.GetString(Name, "ObstacleClip",   "255,255,255,0,255,255,255,0", true));
-			CutRumbleDuration = 0.0f;
 		}
 
 		private IEnumerator Patch()

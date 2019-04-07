@@ -17,11 +17,11 @@ namespace RumbleEnhancerOculus
 
 			if (noteCutInfo.allIsOK)
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.CutClip, Plugin.CutRumbleDuration);
+				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.CutClip);
 			}
 			else
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.MissCutClip, Plugin.CutRumbleDuration);
+				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.MissCutClip);
 			}
 		}
 	}
@@ -33,7 +33,7 @@ namespace RumbleEnhancerOculus
 		static void Prefix(Vector3 pos, NoteController noteController, NoteCutInfo noteCutInfo)
 		{
 			XRNode node = noteCutInfo.saberType == Saber.SaberType.SaberA ? XRNode.LeftHand : XRNode.RightHand;
-			PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.BombClip, Plugin.CutRumbleDuration);
+			PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.BombClip);
 		}
 	}
 
@@ -80,7 +80,7 @@ namespace RumbleEnhancerOculus
 			//if (stack.GetFrame(0).GetMethod().DeclaringType.Name == "VRInputModule")
 			if (strength == 0.25f)
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.UIClip, 0f);
+				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.UIClip);
 			}
 		}
 		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)

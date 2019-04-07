@@ -18,30 +18,15 @@ namespace RumbleEnhancerOculus
 		{
 			public bool ping = false;
 			public bool finished = true;
-		}
+			public WaitForSecondsRealtime waiter = null;
 
-		private struct CWaiterKey
-		{
-			public XRNode node;
-			public float duration;
+			public CRumbleValue(OVRHapticsClip clip)
+			{
+				waiter = new WaitForSecondsRealtime(clip.Count / _kSampleHz);
+			}
 		}
 
 		private Dictionary<CRumbleKey, CRumbleValue> _contRumbleStatuses = new Dictionary<CRumbleKey, CRumbleValue>();
-
-		private Dictionary<CWaiterKey, CustomYieldInstruction> _waiterCache = new Dictionary<CWaiterKey, CustomYieldInstruction>();
-
-		private CustomYieldInstruction GetWaiterFor(XRNode node, float duration)
-		{
-			CWaiterKey key;
-			key.node = node;
-			key.duration = duration;
-			
-			if (_waiterCache.ContainsKey(key) == false)
-			{
-				_waiterCache.Add(key, new WaitForSecondsRealtime(duration));
-			}
-			return _waiterCache[key];
-		}
 
 		private void TriggerHapticFeedback(XRNode node, OVRHapticsClip clip)
 		{
@@ -49,15 +34,9 @@ namespace RumbleEnhancerOculus
 			channel.Mix(clip);
 		}
 
-		public void Rumble(XRNode node, OVRHapticsClip clip, float duration)
+		public void Rumble(XRNode node, OVRHapticsClip clip)
 		{
-			if (duration < clip.Count / _kSampleHz)
-			{
-				TriggerHapticFeedback(node, clip);
-				return;
-			}
-
-			SharedCoroutineStarter.instance.StartCoroutine(RumbleCoroutine(node, clip, duration));
+			TriggerHapticFeedback(node, clip);
 		}
 
 		public void ContinuousRumble(XRNode node, OVRHapticsClip clip)
@@ -67,7 +46,7 @@ namespace RumbleEnhancerOculus
 			key.clip = clip;
 			if (_contRumbleStatuses.ContainsKey(key) == false)
 			{
-				_contRumbleStatuses.Add(key, new CRumbleValue());
+				_contRumbleStatuses.Add(key, new CRumbleValue(clip));
 			}
 			if (_contRumbleStatuses[key].finished)
 			{
@@ -76,31 +55,16 @@ namespace RumbleEnhancerOculus
 			_contRumbleStatuses[key].ping = true;
 		}
 
-		private System.Collections.IEnumerator RumbleCoroutine(XRNode node, OVRHapticsClip clip, float duration)
-		{
-			float clipDuration = clip.Count / _kSampleHz;
-			var waiter = GetWaiterFor(node, clipDuration);
-			do
-			{
-				TriggerHapticFeedback(node, clip);
-				yield return waiter;
-				duration -= clipDuration;
-			}
-			while (duration > 0);
-		}
-
 		private System.Collections.IEnumerator ContinuousRumbleCoroutine(CRumbleKey statusKey)
 		{
 			var node = statusKey.node;
 			var clip = statusKey.clip;
-			float clipDuration = clip.Count / _kSampleHz;
-			var waiter = GetWaiterFor(statusKey.node, clipDuration);
 			_contRumbleStatuses[statusKey].finished = false;
 			do
 			{
 				_contRumbleStatuses[statusKey].ping = false;
 				TriggerHapticFeedback(node, clip);
-				yield return waiter;
+				yield return _contRumbleStatuses[statusKey].waiter;
 			}
 			while (_contRumbleStatuses[statusKey].ping);
 			_contRumbleStatuses[statusKey].finished = true;
