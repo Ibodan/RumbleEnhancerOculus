@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RumbleEnhancerOculus</RootNamespace>
     <AssemblyName>RumbleEnhancerOculus</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -33,15 +33,21 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="0Harmony.1.2.0.1, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\Steam7\steamapps\common\Beat Saber\Beat Saber_Data\Managed\0Harmony.dll</HintPath>
+      <HintPath>E:\Steam7\steamapps\common\Beat Saber\Libs\0Harmony.1.2.0.1.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>J:\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>E:\Steam7\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
     </Reference>
-    <Reference Include="IllusionPlugin">
-      <HintPath>J:\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionPlugin.dll</HintPath>
+    <Reference Include="IPA.Loader">
+      <HintPath>H:\SteamApps\SteamApps\common\Beat Saber\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+    </Reference>
+    <Reference Include="MainAssembly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>E:\Steam7\steamapps\common\Beat Saber\Beat Saber_Data\Managed\MainAssembly.dll</HintPath>
     </Reference>
     <Reference Include="Oculus.VR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,11 +77,20 @@
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="MyHapticFeedbackHelper.cs" />
     <Compile Include="Plugin.cs" />
+    <Compile Include="PluginConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="manifest.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"C:\Users\kataho\Desktop\beat saber workspace\PluginVersionSetter.exe" $(ProjectDir)Properties\AssemblyInfo.cs $(ProjectDir)Plugin.cs
-</PreBuildEvent>
+    <!--<PreBuildEvent>"C:\Users\kataho\Desktop\beat saber workspace\PluginVersionSetter.exe" $(ProjectDir)Properties\AssemblyInfo.cs $(ProjectDir)Plugin.cs
+</PreBuildEvent>-->
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties manifest_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -1,81 +1,109 @@
 ﻿using System;
 using System.Linq;
-using IllusionPlugin;
+using IPA;
+using IPA.Config;
+using IPA.Utilities;
+using IPA.Logging;
 using Harmony;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using IPALogger = IPA.Logging.Logger;
 
 namespace RumbleEnhancerOculus
 {
-	public class Plugin : IPlugin
-	{
-		public static OVRHapticsClip CutClip;
-		public static OVRHapticsClip MissCutClip;
-		public static OVRHapticsClip UIClip;
-		public static OVRHapticsClip BombClip;
-		public static OVRHapticsClip ClashClip;
-		public static OVRHapticsClip ObstacleClip;
+    public class Plugin : IBeatSaberPlugin
+    {
+        public static OVRHapticsClip CutClip;
+        public static OVRHapticsClip MissCutClip;
+        public static OVRHapticsClip UIClip;
+        public static OVRHapticsClip BombClip;
+        public static OVRHapticsClip ClashClip;
+        public static OVRHapticsClip ObstacleClip;
+        internal static IPALogger logger;
+        internal static Ref<PluginConfig> config;
+        internal static IConfigProvider configProvider;
 
-		public string Name => "RumbleEnhancerOculus";
-		public string Version => "1.0.6";
+        public string Name => "RumbleEnhancerOculus";
+        public string Version => "1.0.6";
 
-		private OVRHapticsClip createHapticsClip(string strPattern)
-		{
-			var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
+        public void Init(IPALogger logger, [Config.Prefer("json")] IConfigProvider cfgProvider)
+        {
+            Plugin.logger = logger;
+            configProvider = cfgProvider;
+            config = configProvider.MakeLink<PluginConfig>((p, v) =>
+            {
+                // Build new config file if it doesn't exist or RegenerateConfig is true
 
-			if (pattern.Count() == 0) pattern = new byte[] { 255, 255, 0, 0, 0, 0 };
+                Plugin.logger.Debug("Initializing config.");
+                if (v.Value == null || v.Value.RegenerateConfig)
+                {
+                    Plugin.logger.Info("Generating settings file.");
+                    p.Store(v.Value = new PluginConfig(true));
+                }
+                config = v;
+            });
+            //configProvider.Store(config);
+            Plugin.logger.Debug("RumbleEnhancerOculus Initialized, using settings:");
+            config.Value.LogSettings();
+            CutClip = createHapticsClip(config.Value.CutClip);
+            MissCutClip = createHapticsClip(config.Value.MissCutClip);
+            BombClip = createHapticsClip(config.Value.BombClip);
+            UIClip = createHapticsClip(config.Value.UIClip);
+            ClashClip = createHapticsClip(config.Value.SaberClashClip);
+            ObstacleClip = createHapticsClip(config.Value.ObstacleClip);
+        }
 
-			var clip = new OVRHapticsClip(pattern.Count());
-			for (int i = 0; i < clip.Capacity; i++)
-			{
-				clip.WriteSample(pattern[i]);
-			}
-			return clip;
-		}
+        private OVRHapticsClip createHapticsClip(string strPattern)
+        {
+            var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
 
-		public static void Log(string s)
-		{
-			Console.WriteLine("[RumbleEnhancerOculus] " + s);
-		}
+            if (pattern.Count() == 0) pattern = new byte[] { 255, 255, 0, 0, 0, 0 };
 
-		public void OnApplicationStart()
-		{
-			SharedCoroutineStarter.instance.StartCoroutine(Patch());
+            var clip = new OVRHapticsClip(pattern.Count());
+            for (int i = 0; i < clip.Capacity; i++)
+            {
+                clip.WriteSample(pattern[i]);
+            }
+            return clip;
+        }
 
-			CutClip =      createHapticsClip(ModPrefs.GetString(Name, "CutClip", "0,0,0,0,255,255,255,0,255,255,255,0,255,255,0,255,255,0,200,200,0,200,200,0,120,120,0,90,90,0,90,90", true));
-			MissCutClip =  createHapticsClip(ModPrefs.GetString(Name, "MissCutClip", "0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255", true));
-			BombClip =     createHapticsClip(ModPrefs.GetString(Name, "BombClip", "0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255,0,0,0,0,255,255,255,0,255,255,255", true));
-			UIClip =       createHapticsClip(ModPrefs.GetString(Name, "UIClip",         "80,100,0,0,0,0", true));
-			ClashClip =    createHapticsClip(ModPrefs.GetString(Name, "SaberClashClip", "45,90,135,180,0,0,0,0,0,0", true));
-			ObstacleClip = createHapticsClip(ModPrefs.GetString(Name, "ObstacleClip",   "255,255,255,0,255,255,255,0", true));
-		}
+        public void OnApplicationStart()
+        {
+            SharedCoroutineStarter.instance.StartCoroutine(Patch());
 
-		private IEnumerator Patch()
-		{
-			yield return new WaitForSecondsRealtime(0.2f);
-			var harmony = HarmonyInstance.Create("HapticTest");
-			harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
-			Console.WriteLine("[RumbleEnhancerOculus] patch applied now.");
-		}
+        }
 
-		public void OnApplicationQuit()
-		{
-		}
+        private IEnumerator Patch()
+        {
+            yield return new WaitForSecondsRealtime(0.2f);
+            var harmony = HarmonyInstance.Create("HapticTest");
+            harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+            logger.Debug("Harmony patches applied now.");
+        }
 
-		public void OnLevelWasLoaded(int level)
-		{
-		}
+        public void OnApplicationQuit()
+        {
+        }
 
-		public void OnLevelWasInitialized(int level)
-		{
-		}
+        public void OnUpdate()
+        {
+        }
 
-		public void OnUpdate()
-		{
-		}
+        public void OnFixedUpdate()
+        {
+        }
 
-		public void OnFixedUpdate()
-		{
-		}
-	}
+        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
+        {
+        }
+
+        public void OnSceneUnloaded(Scene scene)
+        {
+        }
+
+        public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
+        {
+        }
+    }
 }
