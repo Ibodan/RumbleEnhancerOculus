@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
+  "author": "Ibodan",
+  "description": "BeatSaber haptic feedback rebuilding for Oculus Touch.",
+  "gameVersion": "1.6.0",
+  "id": "RumbleEnhancerOculus",
+  "name": "RumbleEnhancerOculus",
+  "version": "1.1.0",
+  "dependsOn": {
+    "BSIPA": "^3.13.4"
+  },
+  "features": []
+}
