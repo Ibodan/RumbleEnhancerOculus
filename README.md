@@ -7,9 +7,7 @@ Though this plugin realizes things by whole different approach from original Rum
 
 ### Notice
 
-- You need **Harmony library installed**. Install with ModManager beforehand. 
 - This is only **for Oculus Touch controller**. Nothing should be changed with Vibe or other controllers.
-
 
 ### Settings
 
