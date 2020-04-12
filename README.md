@@ -7,16 +7,14 @@ Though this plugin realizes things by whole different approach from original Rum
 
 ### Notice
 
-- You need **Harmony library installed**. Install with ModManager beforehand. 
 - This is only **for Oculus Touch controller**. Nothing should be changed with Vibe or other controllers.
-
 
 ### Settings
 
-Section named `RumbleEnhancerOculus` in `UserData/modprefs.ini` is the place for it.
+Once you play the game with the plugin installed, setting file is created as `UserData/RumbleEnhancerOculus.json`.
 
-`CutClip`, `MissCutClip`, `BombClip`, `UIClip`, `SaberClashClip`, `ObstacleClip` are the vibration patterns played on each events in game. 
+`CutClip`, `MissCutClip`, `BombClip`, `UIClip`, `SaberClashClip`, `ObstacleClip` are the vibration patterns played on each events in game and you can modify these patterns for feeling different haptic touch for these different events.  
 
 - Comma separated 0-255 strength. One item is for a signal of 1/320 = 0.003125secs
 - At least 6 items are required for `SaberClashClip` and `ObstacleClip`.
-- No foolproofs implemented. A wrongly parsed pattern still be played, but it maybe not as expected.
+- No fool-proofs implemented. The plugin ignores any problem of your modification of a pattern. Make sure by yourself.
