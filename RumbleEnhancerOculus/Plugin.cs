@@ -2,15 +2,16 @@
 using System.Linq;
 using IPA;
 using IPA.Config;
-using Harmony;
+using IPA.Config.Stores;
+using HarmonyLib;
 using UnityEngine;
 using System.Collections;
-using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
 
 namespace RumbleEnhancerOculus
 {
-	public class Plugin : IBeatSaberPlugin
+	[Plugin(RuntimeOptions.SingleStartInit)]
+	internal class Plugin
 	{
 		public static OVRHapticsClip CutClip;
 		public static OVRHapticsClip MissCutClip;
@@ -19,89 +20,55 @@ namespace RumbleEnhancerOculus
 		public static OVRHapticsClip ClashClip;
 		public static OVRHapticsClip ObstacleClip;
 
-		internal static IPALogger logger;
+		public static IPALogger logger;
+
+		private Harmony harmony;
 		
-		public void Init(IPALogger logger, [Config.Prefer("json")] IConfigProvider configProvider)
+		[Init]
+		public Plugin(IPALogger logger, Config config)
 		{
-			IPA.Logging.StandardLogger.PrintFilter = IPA.Logging.Logger.LogLevel.All;
 			Plugin.logger = logger;
-			var config = configProvider.MakeLink<PluginConfig>((p, v) =>
-			{
-				if (v.Value._fresh)
-				{
-					Plugin.logger.Debug("Generating settings file.");
-					v.Value._fresh = false;
-					p.Store(v.Value);
-				}
-			});
+			PluginConfig.Instance = config.Generated<PluginConfig>();
+
 			Plugin.logger.Debug("RumbleEnhancerOculus Initialized, using settings:");
-			config.Value.LogValues();
-
-			CutClip = createHapticsClip(config.Value.CutClip);
-			MissCutClip = createHapticsClip(config.Value.MissCutClip);
-			BombClip = createHapticsClip(config.Value.BombClip);
-			UIClip = createHapticsClip(config.Value.UIClip);
-			ClashClip = createHapticsClip(config.Value.SaberClashClip);
-			ObstacleClip = createHapticsClip(config.Value.ObstacleClip);
+			PluginConfig.Instance.LogValues();
 		}
 
-		private OVRHapticsClip createHapticsClip(string strPattern)
-		{
-			var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
-
-			if (pattern.Count() == 0) pattern = new byte[] { 255, 255, 0, 0, 0, 0 };
-
-			var clip = new OVRHapticsClip(pattern.Count());
-			for (int i = 0; i < clip.Capacity; i++)
-			{
-				clip.WriteSample(pattern[i]);
-			}
-			return clip;
-		}
-
+		[OnStart]
 		public void OnApplicationStart()
 		{
-			SharedCoroutineStarter.instance.StartCoroutine(Patch());
-		}
-
-		private IEnumerator Patch()
-		{
-			yield return new WaitForSecondsRealtime(0.2f);
-			var harmony = HarmonyInstance.Create("HapticTest");
+			harmony = new Harmony("ibodan.beatsaber.RumbleEnhancerOculus");
 			harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
 			logger.Debug("Harmony patches applied now.");
 		}
 
+		[OnExit]
 		public void OnApplicationQuit()
 		{
 		}
 
-		public void OnLevelWasLoaded(int level)
+		public static void LoadConfig(PluginConfig config)
 		{
-		}
+			Func<string, OVRHapticsClip> createHapticsClip = (string strPattern) =>
+			{
+				var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
 
-		public void OnLevelWasInitialized(int level)
-		{
-		}
+				if (pattern.Count() == 0) pattern = new byte[] { 255, 255, 0, 0, 0, 0 };
 
-		public void OnUpdate()
-		{
-		}
+				var clip = new OVRHapticsClip(pattern.Count());
+				for (int i = 0; i < clip.Capacity; i++)
+				{
+					clip.WriteSample(pattern[i]);
+				}
+				return clip;
+			};
 
-		public void OnFixedUpdate()
-		{
-		}
-
-		public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
-		{
-		}
-
-		public void OnSceneUnloaded(Scene scene)
-		{
-		}
-
-		public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
-		{
+			CutClip = createHapticsClip(config.CutClip);
+			MissCutClip = createHapticsClip(config.MissCutClip);
+			BombClip = createHapticsClip(config.BombClip);
+			UIClip = createHapticsClip(config.UIClip);
+			ClashClip = createHapticsClip(config.SaberClashClip);
+			ObstacleClip = createHapticsClip(config.ObstacleClip);
 		}
 	}
 }

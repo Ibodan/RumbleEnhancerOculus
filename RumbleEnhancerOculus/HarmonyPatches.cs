@@ -1,4 +1,5 @@
-﻿using Harmony;
+﻿extern alias HMLib;
+using HarmonyLib;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection.Emit;
@@ -11,17 +12,17 @@ namespace RumbleEnhancerOculus
 	[HarmonyPatch("SpawnNoteCutEffect")]
 	public static class NoteCutEffectSpawnerSpawnNoteCutEffectPatch
 	{
-		static void Prefix(Vector3 pos, NoteController noteController, NoteCutInfo noteCutInfo)
+		static void Prefix(Vector3 pos, INoteController noteController, NoteCutInfo noteCutInfo)
 		{
-			XRNode node = noteCutInfo.saberType == Saber.SaberType.SaberA ? XRNode.LeftHand : XRNode.RightHand;
+			XRNode node = noteCutInfo.saberType == SaberType.SaberA ? XRNode.LeftHand : XRNode.RightHand;
 
 			if (noteCutInfo.allIsOK)
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.CutClip);
+				HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.CutClip);
 			}
 			else
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.MissCutClip);
+				HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.MissCutClip);
 			}
 		}
 	}
@@ -30,37 +31,34 @@ namespace RumbleEnhancerOculus
 	[HarmonyPatch("SpawnBombCutEffect")]
 	public static class NoteCutEffectSpawnerSpawnBombCutEffectPatch
 	{
-		static void Prefix(Vector3 pos, NoteController noteController, NoteCutInfo noteCutInfo)
+		static void Prefix(Vector3 pos, INoteController noteController, NoteCutInfo noteCutInfo)
 		{
-			XRNode node = noteCutInfo.saberType == Saber.SaberType.SaberA ? XRNode.LeftHand : XRNode.RightHand;
-			PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.BombClip);
+			XRNode node = noteCutInfo.saberType == SaberType.SaberA ? XRNode.LeftHand : XRNode.RightHand;
+			HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.BombClip);
 		}
 	}
 
-	[HarmonyPatch(typeof(HapticFeedbackController))]
+	[HarmonyPatch(typeof(HMLib::HapticFeedbackController))]
 	[HarmonyPatch("ContinuousRumble")]
 	public static class HapticFeedbackControllerContinuousRumblePatch
 	{
-		static void Prefix(XRNode node)
+		static bool Prefix(XRNode node)
 		{
 			var stack = new StackTrace(2, false);
 			var typename = stack.GetFrame(0).GetMethod().DeclaringType.Name;
 			if (typename == "SaberClashEffect")
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.ContinuousRumble(node, Plugin.ClashClip);
+				HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.ContinuousRumble(node, Plugin.ClashClip);
 			}
 			else
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.ContinuousRumble(node, Plugin.ObstacleClip);
+				HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.ContinuousRumble(node, Plugin.ObstacleClip);
 			}
-		}
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			return new List<CodeInstruction>() { new CodeInstruction(OpCodes.Ret) };
+			return false;
 		}
 	}
 
-	[HarmonyPatch(typeof(HapticFeedbackController))]
+	[HarmonyPatch(typeof(HMLib::HapticFeedbackController))]
 	[HarmonyPatch("Rumble")]
 	public static class HapticFeedbackControllerRumblePatch
 	{
@@ -70,22 +68,20 @@ namespace RumbleEnhancerOculus
 		}
 	}
 
-	[HarmonyPatch(typeof(OculusVRHelper))]
+	[HarmonyPatch(typeof(HMLib::OculusVRHelper))]
 	[HarmonyPatch("TriggerHapticPulse")]
 	public static class OculusVRHelperTriggerHapticPulsePatch
 	{
-		static void Prefix(XRNode node, float strength)
+		static bool Prefix(XRNode node, float strength)
 		{
 			//var stack = new StackTrace(3, false);
 			//if (stack.GetFrame(0).GetMethod().DeclaringType.Name == "VRInputModule")
 			if (strength == 0.25f)
 			{
-				PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.UIClip);
+				HMLib::PersistentSingleton<MyHapticFeedbackController>.instance.Rumble(node, Plugin.UIClip);
+				return false;
 			}
-		}
-		static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-		{
-			return new List<CodeInstruction>() { new CodeInstruction(OpCodes.Ret) };
+			return true;
 		}
 	}
 }

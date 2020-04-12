@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿extern alias HMLib;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
 namespace RumbleEnhancerOculus
 {
-	class MyHapticFeedbackController : PersistentSingleton<MyHapticFeedbackController>
+	class MyHapticFeedbackController : HMLib::PersistentSingleton<MyHapticFeedbackController>
 	{
 		private const float _kSampleHz = 320.0f;
 
@@ -50,7 +51,7 @@ namespace RumbleEnhancerOculus
 			}
 			if (_contRumbleStatuses[key].finished)
 			{
-				SharedCoroutineStarter.instance.StartCoroutine(ContinuousRumbleCoroutine(key));
+				HMLib::SharedCoroutineStarter.instance.StartCoroutine(ContinuousRumbleCoroutine(key));
 			}
 			_contRumbleStatuses[key].ping = true;
 		}
