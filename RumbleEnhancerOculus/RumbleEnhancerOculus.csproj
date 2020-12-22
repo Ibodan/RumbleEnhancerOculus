@@ -36,6 +36,9 @@
     <Reference Include="0Harmony">
       <HintPath>D:\SteamAnnex\steamapps\common\Beat Saber\IPA\Libs\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="GameplayCore">
+      <HintPath>D:\SteamAnnex\steamapps\common\Beat Saber\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+    </Reference>
     <Reference Include="HMLib">
       <HintPath>D:\SteamAnnex\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Aliases>HMLib</Aliases>
