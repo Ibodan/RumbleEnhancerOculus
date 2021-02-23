@@ -1,7 +1,7 @@
 {
   "author": "Ibodan",
   "description": ["Enables you to customize haptic feedbacks (controller rumbling patterns)."],
-  "gameVersion": "1.13.0",
+  "gameVersion": "1.13.2",
   "id": null,
   "name": "CustomHapticFeedback",
   "version": "2.0.0",
