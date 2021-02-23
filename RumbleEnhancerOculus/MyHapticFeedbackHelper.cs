@@ -1,74 +1,109 @@
 ﻿extern alias HMLib;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.XR;
+using System;
 
-namespace RumbleEnhancerOculus
+namespace CustomHapticFeedback
 {
 	class MyHapticFeedbackController : HMLib::PersistentSingleton<MyHapticFeedbackController>
 	{
-		private const float _kSampleHz = 320.0f;
-
-		private struct CRumbleKey
+		private struct ContRumbleKey
 		{
 			public XRNode node;
-			public OVRHapticsClip clip;
+			public byte[] clip;
 		}
 
-		private class CRumbleValue
+		private class ContRumbleValue
 		{
 			public bool ping = false;
-			public bool finished = true;
-			public WaitForSecondsRealtime waiter = null;
+			public bool playing { get { return cursor < length; } }
+			public int cursor = 0;
+			private readonly int length = 0;
 
-			public CRumbleValue(OVRHapticsClip clip)
+			public ContRumbleValue(byte[] clip)
 			{
-				waiter = new WaitForSecondsRealtime(clip.Count / _kSampleHz);
+				length = clip.Length;
+				cursor = length;
 			}
 		}
 
-		private Dictionary<CRumbleKey, CRumbleValue> _contRumbleStatuses = new Dictionary<CRumbleKey, CRumbleValue>();
+		private Dictionary<ContRumbleKey, ContRumbleValue> contRumbles = new Dictionary<ContRumbleKey, ContRumbleValue>();
 
-		private void TriggerHapticFeedback(XRNode node, OVRHapticsClip clip)
+		private HapticFeedbackChannel rightChannel = null;
+		private HapticFeedbackChannel leftChannel = null;
+
+		public void InjectDriver(HapticFeedbackDriver driver)
 		{
-			OVRHaptics.OVRHapticsChannel channel = (node != XRNode.LeftHand) ? OVRHaptics.RightChannel : OVRHaptics.LeftChannel;
-			channel.Mix(clip);
+			if (rightChannel != null) return;
+
+			rightChannel = new HapticFeedbackChannel(XRNode.RightHand, driver);
+			leftChannel = new HapticFeedbackChannel(XRNode.LeftHand, driver);
 		}
 
-		public void Rumble(XRNode node, OVRHapticsClip clip)
+		public void Rumble(XRNode node, byte[] clip)
 		{
 			TriggerHapticFeedback(node, clip);
 		}
 
-		public void ContinuousRumble(XRNode node, OVRHapticsClip clip)
+		public void ContinuousRumble(XRNode node, byte[] clip)
 		{
-			CRumbleKey key;
+			ContRumbleKey key;
 			key.node = node;
 			key.clip = clip;
-			if (_contRumbleStatuses.ContainsKey(key) == false)
+			if (contRumbles.ContainsKey(key) == false)
 			{
-				_contRumbleStatuses.Add(key, new CRumbleValue(clip));
+				contRumbles.Add(key, new ContRumbleValue(clip));
 			}
-			if (_contRumbleStatuses[key].finished)
-			{
-				HMLib::SharedCoroutineStarter.instance.StartCoroutine(ContinuousRumbleCoroutine(key));
-			}
-			_contRumbleStatuses[key].ping = true;
+			contRumbles[key].ping = true;
 		}
 
-		private System.Collections.IEnumerator ContinuousRumbleCoroutine(CRumbleKey statusKey)
+		private void TriggerHapticFeedback(XRNode node, byte[] clip)
 		{
-			var node = statusKey.node;
-			var clip = statusKey.clip;
-			_contRumbleStatuses[statusKey].finished = false;
-			do
+			HapticFeedbackChannel channel = (node == XRNode.RightHand) ? rightChannel : leftChannel;
+			channel.Mix(clip);
+		}
+
+		public void OnUpdate()
+		{
+			foreach (KeyValuePair<ContRumbleKey, ContRumbleValue> i in contRumbles)
 			{
-				_contRumbleStatuses[statusKey].ping = false;
-				TriggerHapticFeedback(node, clip);
-				yield return _contRumbleStatuses[statusKey].waiter;
+				if (i.Value.ping)
+				{
+					if (!i.Value.playing)
+					{
+						i.Value.cursor = 0;
+					}
+					if (i.Value.cursor % 2 == 0 && i.Value.playing)
+					{
+						i.Value.ping = false;
+						TriggerHapticFeedback(i.Key.node, i.Key.clip.range(i.Value.cursor, 2));
+					}
+				}
 			}
-			while (_contRumbleStatuses[statusKey].ping);
-			_contRumbleStatuses[statusKey].finished = true;
+
+			rightChannel.Update();
+			leftChannel.Update();
+
+			foreach (KeyValuePair<ContRumbleKey, ContRumbleValue> i in contRumbles)
+			{
+				if (i.Value.playing) { i.Value.cursor++; }
+			}
+		}
+	}
+
+	public static class Extension
+	{
+		public static byte[] range(this byte[] src, int position, int length)
+		{
+			length = Math.Min(src.Length - position, length);
+			if (length <= 0) { return new byte[0];  }
+
+			byte[] ret = new byte[length];
+			for(int i = 0; i < length; i++)
+			{
+				ret[i] = src[position + i];
+			}
+			return ret;
 		}
 	}
 }

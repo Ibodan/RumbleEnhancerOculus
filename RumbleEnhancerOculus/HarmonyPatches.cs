@@ -1,12 +1,10 @@
 ﻿extern alias HMLib;
 using HarmonyLib;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection.Emit;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace RumbleEnhancerOculus
+namespace CustomHapticFeedback
 {
 	[HarmonyPatch(typeof(NoteCutCoreEffectsSpawner))]
 	[HarmonyPatch("SpawnNoteCutEffect")]

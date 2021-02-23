@@ -1,12 +1,12 @@
 {
   "author": "Ibodan",
-  "description": ["BeatSaber haptic feedback rebuilding for Oculus Touch."],
+  "description": ["Enables you to customize haptic feedbacks (controller rumbling patterns)."],
   "gameVersion": "1.13.0",
   "id": null,
-  "name": "RumbleEnhancerOculus",
-  "version": "1.1.2",
+  "name": "CustomHapticFeedback",
+  "version": "2.0.0",
   "dependsOn": {
-      "BSIPA": "^4.1.3"
+      "BSIPA": "^4.1.3",
   },
   "features": [],
   "links": {
