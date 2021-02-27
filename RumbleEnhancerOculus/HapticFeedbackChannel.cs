@@ -32,14 +32,7 @@ namespace CustomHapticFeedback
 
 		public void Update()
 		{
-			if (buffer[bufferCursor] != 0)
-			{
-				driver.TriggerHapticPulse(node, buffer[bufferCursor]);
-			}
-			else
-			{
-				driver.StopHapticPulse(node);
-			}
+			driver.TriggerHapticPulse(node, buffer[bufferCursor]);
 			buffer[bufferCursor] = 0;
 			bufferCursor = (bufferCursor + 1) & bufferMask;
 		}

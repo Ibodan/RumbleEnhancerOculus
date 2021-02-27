@@ -9,12 +9,14 @@ namespace CustomHapticFeedback
 	{
 		public static PluginConfig Instance { get; set; }
 
-		public string CutClip { get; set; } = "9,9,0,9,9,0,0,5,4,3,3,2,2,2,1,2,1,1,1";
+		public string CutClip { get; set; } = "9,9,0,9,9,0,0,4,4,3,3,2,2,2,1,1,1,1,1";
 		public string MissCutClip { get; set; } = "9,9,9,0,9,9,9,0,9,9,0,9,9,0,5,0,8,0,4,0,7,0,2,0,5,0,4,0,2,0,2,0,1";
 		public string BombClip { get; set; } = "9,9,9,0,9,9,9,0,9,9,0,9,9,0,5,0,8,0,4,0,7,0,2,0,5,0,4,0,2,0,2,0,1";
 		public string UIClip { get; set; } = "1";
 		public string SaberClashClip { get; set; } = "1,1,0,0,7,3,0,9,8,4,0,7,4,0";
-		public string ObstacleClip { get; set; } = "1,2,4,6,7,2,2,3,3,5,7";
+		public string ObstacleClip { get; set; } = "1,2,3,3,2,1,0,0,0,2,3,2,2,3,2,0,0";
+		public string OculusBiasTable { get; set; } = "0.0, 0.120, 0.220, 0.32, 0.410, 0.51, 0.625, 0.75, 0.875, 1.0";
+		public string SteamBiasTable { get; set; } = "0.0, 0.012, 0.041, 0.07, 0.095, 0.12, 0.155, 0.19, 0.225, 0.26";
 
 		public virtual void Changed()
 		{

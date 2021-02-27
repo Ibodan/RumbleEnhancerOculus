@@ -21,6 +21,9 @@ namespace CustomHapticFeedback
 		public static byte[] ClashClip;
 		public static byte[] ObstacleClip;
 
+		public static float[] OculusBiasTable;
+		public static float[] SteamBiasTable;
+
 		public static IPALogger logger;
 		public static GenericUpdater updater = null;
 
@@ -72,26 +75,27 @@ namespace CustomHapticFeedback
 
 		public static void LoadConfig(PluginConfig config)
 		{
-			Func<string, byte[]> createHapticsClip = (string strPattern) =>
+			Func<string, byte[]> decodeHapticsClip = (string strPattern) =>
 			{
-				var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
-
-				if (pattern.Count() == 0) pattern = new byte[] { 9, 9, 0, 0, 0 };
-
-				var clip = new byte[pattern.Count()];
-				for (int i = 0; i < clip.Length; i++)
-				{
-					clip[i] = pattern[i];
-				}
-				return clip;
+				return strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => byte.Parse(s)).ToArray();
 			};
 
-			CutClip = createHapticsClip(config.CutClip);
-			MissCutClip = createHapticsClip(config.MissCutClip);
-			BombClip = createHapticsClip(config.BombClip);
-			UIClip = createHapticsClip(config.UIClip);
-			ClashClip = createHapticsClip(config.SaberClashClip);
-			ObstacleClip = createHapticsClip(config.ObstacleClip);
+			Func<string, float[]> decodeBiasTable = (string strPattern) =>
+			{
+				var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => float.Parse(s)).ToArray();
+				if (pattern.Count() != 10) pattern = new float[] { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 1f };
+				return pattern;
+			};
+
+			CutClip = decodeHapticsClip(config.CutClip);
+			MissCutClip = decodeHapticsClip(config.MissCutClip);
+			BombClip = decodeHapticsClip(config.BombClip);
+			UIClip = decodeHapticsClip(config.UIClip);
+			ClashClip = decodeHapticsClip(config.SaberClashClip);
+			ObstacleClip = decodeHapticsClip(config.ObstacleClip);
+
+			OculusBiasTable = decodeBiasTable(config.OculusBiasTable);
+			SteamBiasTable = decodeBiasTable(config.SteamBiasTable);
 		}
 	}
 
