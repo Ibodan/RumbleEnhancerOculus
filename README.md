@@ -14,6 +14,8 @@ You can modify these patterns for feeling different tactile feedback from differ
 - Comma separated 0-9 strength. One item is for a signal of one tick. (ex. 1/90 = 0.01111secs for 90Hz frame rate)
 - No fool-proofs implemented. The plugin ignores any problem of your modification of a pattern. Make sure by yourself.
 
+`--BiasTable` parameters are for development purpose. Should be left unmodified.
+
 ### For users of former plugin "RumbleEnhancerOculus"
 
 - If you have one already installed, you must manually remove RumbleEnhancerOculus.dll from your Plugins folder.
@@ -23,9 +25,3 @@ You can modify these patterns for feeling different tactile feedback from differ
 
 Oculus Quest 2 makes it easy to test both SteamVR and Oculus SDK with one device (by connecting PC with Virtual Desktop / Oculus Link). 
 Makes me to decide to make this plugin compatible with both SDKs. And it leads the whole plugin name to be changed. 
-
-Unfortunately, currently SteamVR has poorer capability[^1] on haptic feedback than Oculus, thus, to be along with SteamVR, the plugin had to be downgraded at this point.
-I did my best in making the expression ability acceptable enough on poorer side though.
-
-[^1]: Has lower update frequency up to game tick rate (60-90Hz), while Oculus's 320Hz by playing a pattern buffered in a controller.
-And has no ability to handle vibration strength and frequency.
