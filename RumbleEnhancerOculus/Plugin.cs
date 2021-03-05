@@ -82,9 +82,12 @@ namespace CustomHapticFeedback
 
 			Func<string, float[]> decodeBiasTable = (string strPattern) =>
 			{
-				var pattern = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => float.Parse(s)).ToArray();
-				if (pattern.Count() != 10) pattern = new float[] { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 1f };
-				return pattern;
+				var hint = strPattern.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => float.Parse(s)).ToArray();
+				if (hint.Count() != 2) hint = new float[] { 1f, 1f };
+				float delta = (hint[1] - hint[0]) / 9.0f;
+				return new float[] { 0,
+					hint[0],             hint[0] + delta,     hint[0] + delta * 2, hint[0] + delta * 3, hint[0] + delta * 4, 
+					hint[0] + delta * 5, hint[0] + delta * 6, hint[0] + delta * 7, hint[0] + delta * 8, hint[1]};
 			};
 
 			CutClip = decodeHapticsClip(config.CutClip);
@@ -94,8 +97,8 @@ namespace CustomHapticFeedback
 			ClashClip = decodeHapticsClip(config.SaberClashClip);
 			ObstacleClip = decodeHapticsClip(config.ObstacleClip);
 
-			OculusBiasTable = decodeBiasTable(config.OculusBiasTable);
-			SteamBiasTable = decodeBiasTable(config.SteamBiasTable);
+			OculusBiasTable = decodeBiasTable(config.OculusStrengthRange);
+			SteamBiasTable = decodeBiasTable(config.SteamStrengthRange);
 		}
 	}
 

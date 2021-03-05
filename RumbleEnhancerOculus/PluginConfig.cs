@@ -15,8 +15,8 @@ namespace CustomHapticFeedback
 		public string UIClip { get; set; } = "1";
 		public string SaberClashClip { get; set; } = "1,1,0,0,7,3,0,9,8,4,0,7,4,0";
 		public string ObstacleClip { get; set; } = "1,2,3,3,2,1,0,0,0,2,3,2,2,3,2,0,0";
-		public string OculusBiasTable { get; set; } = "0.0, 0.120, 0.220, 0.32, 0.410, 0.51, 0.625, 0.75, 0.875, 1.0";
-		public string SteamBiasTable { get; set; } = "0.0, 0.012, 0.041, 0.07, 0.095, 0.12, 0.155, 0.19, 0.225, 0.26";
+		public string OculusStrengthRange { get; set; } = "0.3, 1.0";
+		public string SteamStrengthRange { get; set; } = "0.012, 0.26";
 
 		public virtual void Changed()
 		{

@@ -2,7 +2,7 @@
 
 BeatSaber haptic feedback system overhaul
 
-This plugin enables you to customize haptic feedbacks (controller rumbling patterns) of various type of interaction with sabers in the game.
+This plugin enables you to customize haptic feedbacks (controller rumbling patterns) of various type of interaction with sabers in your hands.
 (cutting blocks, cutting blocks on wrong direction, cutting bombs, clashing sabers, touching obstacles and touching UI object)
 
 ### Settings
@@ -14,15 +14,16 @@ You can modify these patterns for feeling different tactile feedback from differ
 - Comma separated 0-9 strength. One item is for a signal of one tick. (ex. 1/90 = 0.01111secs for 90Hz frame rate)
 - No fool-proofs implemented. The plugin ignores any problem of your modification of a pattern. Make sure by yourself.
 
-`--BiasTable` parameters are for calibration purpose. Default values are calibrated for Oculus Quest 2 on each SDK.
+`--StrengthRange` parameters are for calibration purpose. Default values are calibrated for Oculus Quest 2 on each SDK.
+
 How to calibrate
-1. Change `UIClip` pattern to many 9s. Adjust right most value on a target SDKs bias table, find the minimum value it can keep making maximum rumble.
-2. Change `UIClip` pattern to many 1s. Adjust second value from left, find the minimum value it can make minimum rumble.
-3. Linearly interpolate rest of values.
+1. Change `UIClip` pattern to many 1s. Adjust left value on a target SDK's `--StrengthRange`, find the minimum value it can make minimum rumble.
+2. Change `UIClip` pattern to many 9s. Adjust right value, find the minimum value but it can keep making maximum rumble.
+3. If you feel overall rumble weaker, left value can be used as volume adjustment. Try increase a bit.
 
 ### For users of former plugin "RumbleEnhancerOculus"
 
-- If you have one already installed, you must manually remove RumbleEnhancerOculus.dll from your Plugins folder.
+- You must manually remove RumbleEnhancerOculus.dll from your Plugins folder.
 - Rumble patterns for former plugin obviously generates different haptic feedbacks because of update frequency difference, so you have to re-design new ones.
 
 ### Background
