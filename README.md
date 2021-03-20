@@ -14,12 +14,12 @@ You can modify these patterns for feeling different tactile feedback from differ
 - Comma separated 0-9 strength. One item is for a signal of one tick. (ex. 1/90 = 0.01111secs for 90Hz frame rate)
 - No fool-proofs implemented. The plugin ignores any problem of your modification of a pattern. Make sure by yourself.
 
-`--StrengthRange` parameters are for calibration purpose. Default values are calibrated for Oculus Quest 2 on each SDK.
+`...StrengthRange` parameters are for calibration purpose. Default values are calibrated for Oculus Quest 2 on each SDK.
 
 How to calibrate
-1. Change `UIClip` pattern to many 1s. Adjust left value on a target SDK's `--StrengthRange`, find the minimum value it can make minimum rumble.
-2. Change `UIClip` pattern to many 9s. Adjust right value, find the minimum value but it can keep making maximum rumble.
-3. If you feel overall rumble weaker, left value can be used as volume adjustment. Try increase a bit.
+1. Change `UIClip` pattern to `"1,1,1,1,1,1,1,1,1,1,1,1"`. Adjust left value on a target SDK's `...StrengthRange`, find the minimum value which can make minimum rumble.
+2. Change `UIClip` pattern to `"9,9,9,9,9,9,9,9,9,9,9,9"`. Adjust right value, find the minimum value which can keep making maximum rumble.
+3. If you feel overall rumble weaker, left value can be used as a overall volume adjustment.
 
 ### For users of former plugin "RumbleEnhancerOculus"
 
